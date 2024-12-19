@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysqlrajesh
+    environment:
+      MYSQL_ROOT_PASSWORD: rajesh
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3306:3306"
+    networks:
+      - spring-mysql-network
+
+  producer-app:
+    build:
+      context: .
+    container_name: producer-container
+    depends_on:
+      - mysql
+    ports:
+      - "9090:9090"
+    networks:
+      - spring-mysql-network
+      
+  eureka-app:
+    build:
+      context: .
+    container_name: eurekarajesh
+    ports:
+      - "8090:8090"
+    networks:
+      - spring-mysql-network
+
+networks:
+  spring-mysql-network:
+ 
