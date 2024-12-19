@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    
+    tools{
+        maven 'mymaven'
+    }
+
+    stages {
+        stage('build maven') {
+            steps {
+               checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '51eaf4c5-1c5f-40c4-ac12-c071cc1f91dc', url: 'https://github.com/upadhyay-rajesh/dddd']])
+               bat 'mvn clean install'
+            }
+        }
+         stage('build docker image') {
+            steps {
+                script{
+                    bat 'docker build -t raj050178/myjenkins .'
+                }
+               
+            }
+        }
+        
+        stage('push docker image to docker hub'){
+		steps{
+		    script{
+		          bat 'docker login -u upadhyay.rajesh@rediffmail.com -p Rajesh123@ docker.io'
+                    
+                    bat 'docker push raj050178/myjenkins'
+                
+		    }
+		}
+	}
+        
+    }
+}
